@@ -2,8 +2,10 @@
 export interface User {
   id: string;
   email: string | null;
+  googleId?: string | null;
   name?: string;
-  authProvider?: 'email' | 'telegram';
+  profilePhotoUrl?: string | null;
+  authProvider?: 'google' | 'telegram';
   telegramId?: number;
   telegramUsername?: string;
   telegramFirstName?: string;

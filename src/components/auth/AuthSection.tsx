@@ -1,25 +1,93 @@
-import { useState } from 'react';
+import { useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Mail, Lock, LogOut, AlertCircle, Sparkles } from 'lucide-react';
+import { LogOut, AlertCircle, Sparkles } from 'lucide-react';
 import { useAuthStore } from '../../stores/authStore';
 import styles from './AuthSection.module.css';
 
+const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+
+declare global {
+  interface Window {
+    google?: {
+      accounts: {
+        id: {
+          initialize: (config: {
+            client_id: string;
+            callback: (response: { credential: string }) => void;
+            auto_select?: boolean;
+          }) => void;
+          renderButton: (
+            element: HTMLElement,
+            config: {
+              theme?: 'outline' | 'filled_blue' | 'filled_black';
+              size?: 'large' | 'medium' | 'small';
+              type?: 'standard' | 'icon';
+              text?: 'signin_with' | 'signup_with' | 'continue_with' | 'signin';
+              shape?: 'rectangular' | 'pill' | 'circle' | 'square';
+              logo_alignment?: 'left' | 'center';
+              width?: number;
+              locale?: string;
+            }
+          ) => void;
+          prompt: () => void;
+        };
+      };
+    };
+  }
+}
+
 export function AuthSection() {
-  const { isAuthenticated, isLoading, error, login, register, clearError } =
-    useAuthStore();
+  const { isAuthenticated, isLoading, error, loginWithGoogle, clearError } = useAuthStore();
 
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [isLoginMode, setIsLoginMode] = useState(true);
+  const handleGoogleCallback = useCallback(
+    async (response: { credential: string }) => {
+      await loginWithGoogle(response.credential);
+    },
+    [loginWithGoogle]
+  );
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (isLoginMode) {
-      await login(email, password);
-    } else {
-      await register(email, password);
-    }
-  };
+  useEffect(() => {
+    if (isAuthenticated) return;
+
+    // Load Google Identity Services script
+    const script = document.createElement('script');
+    script.src = 'https://accounts.google.com/gsi/client';
+    script.async = true;
+    script.defer = true;
+    script.onload = () => {
+      if (window.google) {
+        window.google.accounts.id.initialize({
+          client_id: GOOGLE_CLIENT_ID,
+          callback: handleGoogleCallback,
+        });
+
+        const buttonContainer = document.getElementById('google-signin-button');
+        if (buttonContainer) {
+          window.google.accounts.id.renderButton(buttonContainer, {
+            theme: 'outline',
+            size: 'large',
+            type: 'standard',
+            text: 'continue_with',
+            shape: 'pill',
+            width: 300,
+            logo_alignment: 'left',
+            locale: 'en',
+          });
+        }
+      }
+    };
+    document.head.appendChild(script);
+
+    return () => {
+      // Cleanup script on unmount
+      const existingScript = document.querySelector(
+        'script[src="https://accounts.google.com/gsi/client"]'
+      );
+      if (existingScript) {
+        existingScript.remove();
+      }
+    };
+  }, [isAuthenticated, handleGoogleCallback]);
 
   if (isAuthenticated) {
     return null;
@@ -38,9 +106,7 @@ export function AuthSection() {
             <Sparkles size={28} />
           </div>
           <h1 className={styles.title}>Majlees ga xush kelibsiz</h1>
-          <p className={styles.subtitle}>
-            {isLoginMode ? 'Davom etish uchun kiring' : 'Hisob yarating'}
-          </p>
+          <p className={styles.subtitle}>Davom etish uchun kiring</p>
         </div>
 
         <AnimatePresence mode="wait">
@@ -58,59 +124,35 @@ export function AuthSection() {
           )}
         </AnimatePresence>
 
-        <form onSubmit={handleSubmit} className={styles.form}>
-          <div className={styles.inputGroup}>
-            <label className={styles.label}>Email</label>
-            <div className={styles.inputWrapper}>
-              <Mail size={18} className={styles.inputIcon} />
-              <input
-                type="email"
-                placeholder="Email manzilingizni kiriting"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className={styles.input}
-                required
-              />
-            </div>
-          </div>
-
-          <div className={styles.inputGroup}>
-            <label className={styles.label}>Parol</label>
-            <div className={styles.inputWrapper}>
-              <Lock size={18} className={styles.inputIcon} />
-              <input
-                type="password"
-                placeholder="Parolingizni kiriting"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className={styles.input}
-                required
-              />
-            </div>
-          </div>
-
-          <button type="submit" className={styles.submitBtn} disabled={isLoading}>
-            {isLoading ? (
+        <div className={styles.authContent}>
+          {isLoading ? (
+            <div className={styles.loadingContainer}>
               <span className={styles.loader} />
-            ) : isLoginMode ? (
-              'Kirish'
-            ) : (
-              'Hisob yaratish'
-            )}
-          </button>
-        </form>
-
-        <div className={styles.divider}>
-          <span>yoki</span>
+              <p className={styles.loadingText}>Kirish...</p>
+            </div>
+          ) : (
+            <>
+              <div id="google-signin-button" className={styles.googleButton} />
+              <p className={styles.hint}>
+                Google orqali tizimga xavfsiz kiring
+              </p>
+            </>
+          )}
         </div>
 
-        <button
-          type="button"
-          className={styles.switchBtn}
-          onClick={() => setIsLoginMode(!isLoginMode)}
-        >
-          {isLoginMode ? "Hisobingiz yo'qmi? Ro'yxatdan o'ting" : "Hisobingiz bormi? Kiring"}
-        </button>
+        <div className={styles.footer}>
+          <p className={styles.terms}>
+            Davom etish orqali siz{' '}
+            <a href="/terms" className={styles.link}>
+              Foydalanish shartlari
+            </a>{' '}
+            va{' '}
+            <a href="/privacy" className={styles.link}>
+              Maxfiylik siyosati
+            </a>
+            ga rozilik bildirasiz.
+          </p>
+        </div>
       </motion.div>
     </div>
   );

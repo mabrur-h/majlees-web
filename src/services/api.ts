@@ -190,6 +190,23 @@ class ApiService {
     return data as TelegramAuthResponse;
   }
 
+  // Google Sign-In Authentication
+  async googleAuth(idToken: string): Promise<AuthResponse> {
+    const response = await this.request<AuthResponse['data']>('/api/v1/auth/google', {
+      method: 'POST',
+      body: JSON.stringify({ idToken }),
+    });
+
+    if (response.success && response.data) {
+      this.setTokens(
+        response.data.tokens.accessToken,
+        response.data.tokens.refreshToken
+      );
+    }
+
+    return response as AuthResponse;
+  }
+
   // Lectures
   async getLectures(
     page = 1,

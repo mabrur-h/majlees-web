@@ -10,10 +10,10 @@ interface AuthState {
   error: string | null;
   isTelegramAuth: boolean;
   isNewUser: boolean;
+  _initialized: boolean;
 
   // Actions
-  login: (email: string, password: string) => Promise<boolean>;
-  register: (email: string, password: string) => Promise<boolean>;
+  loginWithGoogle: (idToken: string) => Promise<boolean>;
   loginWithTelegram: () => Promise<boolean>;
   logout: () => void;
   fetchUser: () => Promise<void>;
@@ -21,55 +21,30 @@ interface AuthState {
   initialize: () => Promise<void>;
 }
 
-export const useAuthStore = create<AuthState>((set) => ({
+export const useAuthStore = create<AuthState>((set, get) => ({
   user: null,
   isAuthenticated: api.isAuthenticated(),
   isLoading: false,
   error: null,
   isTelegramAuth: false,
   isNewUser: false,
+  _initialized: false,
 
-  login: async (email: string, password: string) => {
+  loginWithGoogle: async (idToken: string) => {
     set({ isLoading: true, error: null });
     try {
-      const response = await api.login(email, password);
+      const response = await api.googleAuth(idToken);
       if (response.success && response.data) {
         set({
           user: response.data.user,
           isAuthenticated: true,
           isLoading: false,
+          isNewUser: (response.data as any).isNewUser ?? false,
         });
         return true;
       } else {
         set({
-          error: response.error?.message || 'Login failed',
-          isLoading: false,
-        });
-        return false;
-      }
-    } catch (error) {
-      set({
-        error: (error as Error).message,
-        isLoading: false,
-      });
-      return false;
-    }
-  },
-
-  register: async (email: string, password: string) => {
-    set({ isLoading: true, error: null });
-    try {
-      const response = await api.register(email, password);
-      if (response.success && response.data) {
-        set({
-          user: response.data.user,
-          isAuthenticated: true,
-          isLoading: false,
-        });
-        return true;
-      } else {
-        set({
-          error: response.error?.message || 'Registration failed',
+          error: response.error?.message || 'Google login failed',
           isLoading: false,
         });
         return false;
@@ -146,14 +121,23 @@ export const useAuthStore = create<AuthState>((set) => ({
   clearError: () => set({ error: null }),
 
   initialize: async () => {
+    // Prevent multiple initializations
+    if (get()._initialized) {
+      return;
+    }
+    set({ _initialized: true });
+
     // First, try to initialize Telegram SDK
     const isTelegram = await telegram.initialize();
 
-    if (isTelegram) {
+    if (isTelegram && telegram.isTelegramEnvironment) {
       // Auto-login with Telegram if inside Mini App
       const initDataRaw = telegram.getInitDataRaw();
 
-      if (initDataRaw) {
+      // Skip if no init data or if it looks like mock data (contains "mock" or test user id)
+      const isMockData = initDataRaw?.includes('mock') || initDataRaw?.includes('"id":12345678');
+
+      if (initDataRaw && !isMockData) {
         set({ isLoading: true });
         try {
           const response = await api.telegramAuth(initDataRaw);
