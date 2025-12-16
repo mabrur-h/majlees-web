@@ -80,11 +80,17 @@ export function SharedLectureView() {
     switch (activeTab) {
       case 'transcription':
         return lecture.transcription ? (
-          <TranscriptionTab transcription={lecture.transcription} />
+          <TranscriptionTab transcription={{
+            ...lecture.transcription,
+            wordCount: lecture.transcription.wordCount ?? 0,
+          }} />
         ) : null;
       case 'summary':
         return lecture.summary ? (
-          <SummaryTab summary={lecture.summary} />
+          <SummaryTab summary={{
+            ...lecture.summary,
+            chapters: lecture.summary.chapters ?? [],
+          }} />
         ) : null;
       case 'keypoints':
         return lecture.keyPoints ? (

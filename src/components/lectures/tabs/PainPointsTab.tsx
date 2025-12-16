@@ -1,6 +1,5 @@
 import { Icon } from '@iconify/react';
 import type { PainPoint } from '../../../types';
-import { formatTimestamp } from '../../../utils';
 import styles from './Tabs.module.css';
 
 interface PainPointsTabProps {

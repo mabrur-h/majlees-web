@@ -20,7 +20,6 @@ type ShareTab = 'settings' | 'link';
 export function ShareModal({ lecture, isOpen, onClose }: ShareModalProps) {
   const [activeTab, setActiveTab] = useState<ShareTab>('settings');
   const [share, setShare] = useState<LectureShare | null>(null);
-  const [shareUrl, setShareUrl] = useState<string>('');
   const [isLoading, setIsLoading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -47,7 +46,6 @@ export function ShareModal({ lecture, isOpen, onClose }: ShareModalProps) {
       if (response.success && response.data?.share) {
         const shareData = response.data.share;
         setShare(shareData);
-        setShareUrl(response.data.shareUrl);
         setShowTranscription(shareData.showTranscription);
         setShowSummary(shareData.showSummary);
         setShowKeyPoints(shareData.showKeyPoints);
@@ -56,13 +54,11 @@ export function ShareModal({ lecture, isOpen, onClose }: ShareModalProps) {
       } else {
         // No share exists yet
         setShare(null);
-        setShareUrl('');
         setActiveTab('settings');
       }
     } catch (err) {
       // Share not found is expected for new lectures
       setShare(null);
-      setShareUrl('');
       setActiveTab('settings');
     } finally {
       setIsLoading(false);
@@ -97,7 +93,6 @@ export function ShareModal({ lecture, isOpen, onClose }: ShareModalProps) {
 
       if (response.success && response.data) {
         setShare(response.data.share);
-        setShareUrl(response.data.shareUrl);
         setActiveTab('link');
       } else {
         setError(response.error?.message || 'Failed to create share link');
@@ -127,7 +122,6 @@ export function ShareModal({ lecture, isOpen, onClose }: ShareModalProps) {
 
       if (response.success && response.data) {
         setShare(response.data.share);
-        setShareUrl(response.data.shareUrl);
       } else {
         setError(response.error?.message || 'Failed to update share settings');
       }
@@ -153,7 +147,6 @@ export function ShareModal({ lecture, isOpen, onClose }: ShareModalProps) {
 
       if (response.success) {
         setShare(null);
-        setShareUrl('');
         setActiveTab('settings');
       } else {
         setError(response.error?.message || 'Failed to revoke share link');
@@ -364,7 +357,7 @@ export function ShareModal({ lecture, isOpen, onClose }: ShareModalProps) {
                     <Icon icon="logos:telegram" width={20} height={20} />
                     Telegram orqali ulashish
                   </button>
-                  {navigator.share && (
+                  {typeof navigator.share === 'function' && (
                     <button className={styles.shareBtn} onClick={handleNativeShare}>
                       <Icon icon="solar:share-linear" width={20} height={20} />
                       Boshqa usullar
