@@ -1,0 +1,40 @@
+.button {
+  padding: 10px 15px;
+  border-radius: 6px;
+  border: none;
+  background: #3b82f6;
+  color: #e2e8f0;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.button:hover:not(:disabled) {
+  background: #2563eb;
+}
+
+.button:disabled {
+  background: #475569;
+  cursor: not-allowed;
+}
+
+.fullWidth {
+  width: 100%;
+}
+
+.secondary {
+  background: #475569;
+}
+
+.secondary:hover:not(:disabled) {
+  background: #64748b;
+}
+
+.danger {
+  background: #ef4444;
+}
+
+.danger:hover:not(:disabled) {
+  background: #dc2626;
+}

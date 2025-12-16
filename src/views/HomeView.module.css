@@ -1,0 +1,784 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+  padding: var(--space-4);
+  padding-bottom: calc(var(--mobile-nav-height) + var(--space-8));
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+@media (min-width: 1024px) {
+  .container {
+    padding: var(--space-8);
+    max-width: 860px;
+  }
+}
+
+/* Hero Section - Neotech Style */
+.hero {
+  position: relative;
+  padding: var(--space-8) var(--space-6);
+  border-radius: var(--radius-3xl);
+  overflow: hidden;
+  background: var(--color-glass);
+  border: 1px solid var(--color-border);
+}
+
+/* Animated mesh background */
+.heroGlow {
+  position: absolute;
+  inset: 0;
+  background: var(--gradient-mesh);
+  opacity: 0.8;
+  pointer-events: none;
+}
+
+/* Floating orbs for dynamic effect */
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -20%;
+  right: -10%;
+  width: 200px;
+  height: 200px;
+  background: radial-gradient(circle, rgba(139, 92, 246, 0.25) 0%, transparent 70%);
+  border-radius: 50%;
+  filter: blur(40px);
+  animation: orbFloat1 8s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.hero::after {
+  content: '';
+  position: absolute;
+  bottom: -15%;
+  left: -5%;
+  width: 180px;
+  height: 180px;
+  background: radial-gradient(circle, rgba(6, 182, 212, 0.2) 0%, transparent 70%);
+  border-radius: 50%;
+  filter: blur(35px);
+  animation: orbFloat2 10s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.heroContent {
+  position: relative;
+  z-index: 1;
+}
+
+.greeting {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-bottom: var(--space-4);
+}
+
+.wave {
+  font-size: 1.75rem;
+  animation: wave 2.5s ease-in-out infinite;
+  transform-origin: 70% 70%;
+  display: inline-block;
+}
+
+@keyframes wave {
+  0%, 100% { transform: rotate(0deg); }
+  10% { transform: rotate(14deg); }
+  20% { transform: rotate(-8deg); }
+  30% { transform: rotate(14deg); }
+  40% { transform: rotate(-4deg); }
+  50%, 100% { transform: rotate(0deg); }
+}
+
+.greetingText {
+  font-size: var(--text-lg);
+  font-weight: var(--font-medium);
+  color: var(--color-text-secondary);
+}
+
+.heroTitle {
+  font-size: var(--text-2xl);
+  font-weight: var(--font-bold);
+  color: var(--color-text-primary);
+  line-height: 1.25;
+  margin-bottom: var(--space-3);
+  letter-spacing: -0.02em;
+}
+
+@media (min-width: 640px) {
+  .heroTitle {
+    font-size: var(--text-3xl);
+  }
+}
+
+.gradientText {
+  background: linear-gradient(135deg, #8b5cf6 0%, #06b6d4 50%, #ec4899 100%);
+  background-size: 200% 200%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: textShimmer 4s ease-in-out infinite;
+}
+
+.heroSubtitle {
+  font-size: var(--text-base);
+  color: var(--color-text-tertiary);
+  line-height: 1.6;
+  max-width: 400px;
+}
+
+/* Quick Actions - Neotech Enhanced */
+.quickActions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.primaryAction {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  width: 100%;
+  padding: var(--space-5) var(--space-6);
+  background: var(--color-glass);
+  border: 1px solid var(--color-border-accent);
+  border-radius: var(--radius-2xl);
+  color: var(--color-text-primary);
+  text-align: left;
+  cursor: pointer;
+  overflow: hidden;
+  transition: all var(--transition-normal);
+}
+
+/* Gradient border effect on hover */
+.primaryAction::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-2xl);
+  padding: 1px;
+  background: var(--gradient-border-subtle);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: xor;
+  -webkit-mask-composite: xor;
+  opacity: 0;
+  transition: opacity var(--transition-normal);
+}
+
+.primaryAction:hover {
+  background: var(--color-glass-hover);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-card-hover);
+}
+
+.primaryAction:hover::before {
+  opacity: 1;
+}
+
+.actionGlow {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 30% 50%, rgba(139, 92, 246, 0.12) 0%, transparent 60%);
+  opacity: 0.8;
+  transition: opacity var(--transition-normal);
+}
+
+.primaryAction:hover .actionGlow {
+  opacity: 1;
+  background: radial-gradient(ellipse at 30% 50%, rgba(139, 92, 246, 0.18) 0%, transparent 60%);
+}
+
+.actionIcon {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  background: var(--gradient-accent);
+  border-radius: var(--radius-xl);
+  color: white;
+  flex-shrink: 0;
+  box-shadow: var(--shadow-glow-sm);
+  transition: all var(--transition-normal);
+}
+
+.primaryAction:hover .actionIcon {
+  transform: scale(1.05);
+  box-shadow: var(--shadow-glow);
+}
+
+.actionContent {
+  position: relative;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.actionTitle {
+  font-size: var(--text-lg);
+  font-weight: var(--font-semibold);
+  letter-spacing: -0.01em;
+}
+
+.actionSubtitle {
+  font-size: var(--text-sm);
+  color: var(--color-text-tertiary);
+}
+
+.actionArrow {
+  position: relative;
+  color: var(--color-accent);
+  flex-shrink: 0;
+  transition: transform var(--transition-fast);
+}
+
+.primaryAction:hover .actionArrow {
+  transform: translateX(4px);
+}
+
+.secondaryActions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-3);
+}
+
+.secondaryAction {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  background: var(--color-glass);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  color: var(--color-text-primary);
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  overflow: hidden;
+}
+
+.secondaryAction::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 20% 50%, rgba(139, 92, 246, 0.08) 0%, transparent 50%);
+  opacity: 0;
+  transition: opacity var(--transition-normal);
+}
+
+.secondaryAction:hover {
+  background: var(--color-glass-hover);
+  border-color: var(--color-border-light);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.secondaryAction:hover::before {
+  opacity: 1;
+}
+
+.secondaryIcon {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: var(--color-bg-elevated);
+  border-radius: var(--radius-lg);
+  color: var(--color-text-secondary);
+  transition: all var(--transition-fast);
+}
+
+.secondaryAction:hover .secondaryIcon {
+  background: var(--color-accent-subtle);
+  color: var(--color-accent);
+}
+
+/* Stats Section - Neotech Enhanced with Background Icons */
+.statsSection {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.sectionTitle {
+  font-size: var(--text-xs);
+  font-weight: var(--font-semibold);
+  color: var(--color-text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-3);
+}
+
+.statCard {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  padding: var(--space-5) var(--space-4);
+  background: var(--color-glass);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-2xl);
+  overflow: hidden;
+  transition: all var(--transition-normal);
+  min-height: 100px;
+}
+
+.statCard:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+}
+
+/* Background Icon - Large, positioned, with opacity */
+.statBgIcon {
+  position: absolute;
+  right: -10px;
+  bottom: -10px;
+  opacity: 0.12;
+  transition: all var(--transition-normal);
+  pointer-events: none;
+}
+
+.statCard:hover .statBgIcon {
+  opacity: 0.2;
+  transform: scale(1.1) rotate(5deg);
+}
+
+/* Green variant */
+.statCard.green {
+  border-color: rgba(16, 185, 129, 0.15);
+}
+
+.statCard.green::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 100% 100%, rgba(16, 185, 129, 0.08) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.statCard.green:hover {
+  border-color: rgba(16, 185, 129, 0.3);
+  box-shadow: var(--shadow-md), 0 0 30px rgba(16, 185, 129, 0.1);
+}
+
+.statCard.green .statBgIcon {
+  color: var(--color-success);
+}
+
+.statCard.green .statValue {
+  color: var(--color-success);
+}
+
+/* Yellow variant */
+.statCard.yellow {
+  border-color: rgba(245, 158, 11, 0.15);
+}
+
+.statCard.yellow::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 100% 100%, rgba(245, 158, 11, 0.08) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.statCard.yellow:hover {
+  border-color: rgba(245, 158, 11, 0.3);
+  box-shadow: var(--shadow-md), 0 0 30px rgba(245, 158, 11, 0.1);
+}
+
+.statCard.yellow .statBgIcon {
+  color: var(--color-warning);
+}
+
+.statCard.yellow .statValue {
+  color: var(--color-warning);
+}
+
+/* Purple variant */
+.statCard.purple {
+  border-color: rgba(139, 92, 246, 0.15);
+}
+
+.statCard.purple::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 100% 100%, rgba(139, 92, 246, 0.08) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.statCard.purple:hover {
+  border-color: rgba(139, 92, 246, 0.3);
+  box-shadow: var(--shadow-md), 0 0 30px rgba(139, 92, 246, 0.1);
+}
+
+.statCard.purple .statBgIcon {
+  color: var(--color-accent);
+}
+
+.statCard.purple .statValue {
+  color: var(--color-accent);
+}
+
+.statContent {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-1);
+  z-index: 1;
+}
+
+.statValue {
+  font-size: var(--text-3xl);
+  font-weight: var(--font-bold);
+  color: var(--color-text-primary);
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+
+.statLabel {
+  font-size: var(--text-xs);
+  color: var(--color-text-tertiary);
+  font-weight: var(--font-medium);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Recent Section - Neotech Enhanced */
+.recentSection {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.seeAllBtn {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  background: transparent;
+  border: none;
+  color: var(--color-accent);
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  border-radius: var(--radius-lg);
+}
+
+.seeAllBtn:hover {
+  color: var(--color-accent-hover);
+  background: var(--color-accent-subtle);
+}
+
+.seeAllBtn svg {
+  transition: transform var(--transition-fast);
+}
+
+.seeAllBtn:hover svg {
+  transform: translateX(3px);
+}
+
+.recentList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.recentItem {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-4) var(--space-5);
+  background: var(--color-glass);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  overflow: hidden;
+}
+
+.recentItem::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: var(--gradient-accent);
+  opacity: 0;
+  transition: opacity var(--transition-normal);
+}
+
+.recentItem:hover {
+  background: var(--color-glass-hover);
+  border-color: var(--color-border-light);
+  transform: translateX(4px);
+  box-shadow: var(--shadow-md);
+}
+
+.recentItem:hover::before {
+  opacity: 1;
+}
+
+.recentIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  background: var(--color-bg-elevated);
+  border-radius: var(--radius-lg);
+  color: var(--color-text-secondary);
+  flex-shrink: 0;
+  transition: all var(--transition-fast);
+}
+
+.recentItem:hover .recentIcon {
+  background: var(--color-accent-subtle);
+  color: var(--color-accent);
+}
+
+.recentContent {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.recentTitle {
+  font-size: var(--text-base);
+  font-weight: var(--font-medium);
+  color: var(--color-text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.recentMeta {
+  font-size: var(--text-sm);
+  color: var(--color-text-tertiary);
+}
+
+.recentStatus {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-full);
+  transition: all var(--transition-fast);
+}
+
+.recentStatus.completed {
+  color: var(--color-success);
+  background: var(--color-success-subtle);
+}
+
+.recentStatus.uploaded,
+.recentStatus.extracting,
+.recentStatus.transcribing,
+.recentStatus.summarizing {
+  color: var(--color-warning);
+  background: var(--color-warning-subtle);
+}
+
+.recentStatus.failed {
+  color: var(--color-error);
+  background: var(--color-error-subtle);
+}
+
+.processingDot {
+  width: 10px;
+  height: 10px;
+  background: var(--color-warning);
+  border-radius: var(--radius-full);
+  animation: pulse 1.5s ease-in-out infinite;
+  box-shadow: 0 0 10px rgba(245, 158, 11, 0.5);
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(0.85); }
+}
+
+/* Features Section - Neotech Enhanced */
+.featuresSection {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.featuresGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-4);
+}
+
+@media (min-width: 640px) {
+  .featuresGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.featureCard {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-6);
+  background: var(--color-glass);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-2xl);
+  text-align: center;
+  overflow: hidden;
+  transition: all var(--transition-normal);
+}
+
+/* Gradient border on hover */
+.featureCard::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-2xl);
+  padding: 1px;
+  background: var(--gradient-border-subtle);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: xor;
+  -webkit-mask-composite: xor;
+  opacity: 0;
+  transition: opacity var(--transition-normal);
+}
+
+/* Inner glow effect */
+.featureCard::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle at center, rgba(139, 92, 246, 0.08) 0%, transparent 50%);
+  opacity: 0;
+  transition: opacity var(--transition-normal);
+  pointer-events: none;
+}
+
+.featureCard:hover {
+  transform: translateY(-6px);
+  border-color: transparent;
+  box-shadow: var(--shadow-card-hover);
+}
+
+.featureCard:hover::before {
+  opacity: 1;
+}
+
+.featureCard:hover::after {
+  opacity: 1;
+}
+
+/* Different glow colors for each card */
+.featureCard:nth-child(1)::after {
+  background: radial-gradient(circle at center, rgba(139, 92, 246, 0.1) 0%, transparent 50%);
+}
+
+.featureCard:nth-child(2)::after {
+  background: radial-gradient(circle at center, rgba(6, 182, 212, 0.1) 0%, transparent 50%);
+}
+
+.featureCard:nth-child(3)::after {
+  background: radial-gradient(circle at center, rgba(236, 72, 153, 0.1) 0%, transparent 50%);
+}
+
+.featureIcon {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--radius-2xl);
+  color: var(--color-accent);
+  transition: all var(--transition-normal);
+  z-index: 1;
+}
+
+.featureCard:hover .featureIcon {
+  transform: scale(1.1) rotate(3deg);
+  box-shadow: var(--shadow-glow-sm);
+  border-color: var(--color-border-accent);
+}
+
+/* Different icon colors for variety */
+.featureCard:nth-child(1) .featureIcon {
+  color: var(--color-accent);
+}
+
+.featureCard:nth-child(1):hover .featureIcon {
+  background: var(--color-accent-subtle);
+  box-shadow: 0 0 30px rgba(139, 92, 246, 0.3);
+}
+
+.featureCard:nth-child(2) .featureIcon {
+  color: var(--color-secondary);
+}
+
+.featureCard:nth-child(2):hover .featureIcon {
+  background: var(--color-secondary-subtle);
+  box-shadow: 0 0 30px rgba(6, 182, 212, 0.3);
+}
+
+.featureCard:nth-child(3) .featureIcon {
+  color: var(--color-tertiary);
+}
+
+.featureCard:nth-child(3):hover .featureIcon {
+  background: var(--color-tertiary-subtle);
+  box-shadow: 0 0 30px rgba(236, 72, 153, 0.3);
+}
+
+.featureTitle {
+  position: relative;
+  font-size: var(--text-base);
+  font-weight: var(--font-semibold);
+  color: var(--color-text-primary);
+  z-index: 1;
+}
+
+.featureDesc {
+  position: relative;
+  font-size: var(--text-sm);
+  color: var(--color-text-tertiary);
+  line-height: 1.6;
+  z-index: 1;
+}

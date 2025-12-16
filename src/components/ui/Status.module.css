@@ -1,0 +1,30 @@
+.status {
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+  display: inline-block;
+  text-transform: capitalize;
+}
+
+.uploaded {
+  background: #1d4ed8;
+  color: white;
+}
+
+.extracting,
+.transcribing,
+.summarizing {
+  background: #d97706;
+  color: white;
+}
+
+.completed {
+  background: #059669;
+  color: white;
+}
+
+.failed {
+  background: #dc2626;
+  color: white;
+}

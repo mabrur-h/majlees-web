@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm create:*)",
+      "Bash(npm install)",
+      "Bash(npm install:*)",
+      "Bash(cat:*)",
+      "Bash(npm run build:*)",
+      "Bash(find:*)",
+      "Bash(xargs cat:*)",
+      "Bash(dir:*)",
+      "Bash(dir /s /b \"d:\\uznotes-web\\src\\components\\lectures\\*.css\")",
+      "Bash(del \"d:\\uznotes-web\\src\\components\\lectures\\tabs\\MindMapTab.module.css\")",
+      "Bash(grep:*)",
+      "Bash(npm i:*)"
+    ]
+  }
+}

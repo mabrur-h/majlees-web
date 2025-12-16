@@ -1,0 +1,155 @@
+.tabBar {
+  position: relative;
+  width: 100%;
+}
+
+.tabBar.fullWidth .tabList {
+  width: 100%;
+}
+
+.tabBar.fullWidth .tab {
+  flex: 1;
+}
+
+.tabList {
+  display: inline-flex;
+  gap: var(--space-1);
+  padding: var(--space-1);
+  background: var(--color-glass);
+  border: 1px solid var(--color-glass-border);
+  border-radius: var(--radius-xl);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.tab {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-lg);
+  color: var(--color-text-tertiary);
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+}
+
+.tab:hover {
+  color: var(--color-text-secondary);
+}
+
+.tab.active {
+  color: var(--color-text-primary);
+}
+
+.tabIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tabLabel {
+  position: relative;
+  z-index: 1;
+}
+
+.indicator {
+  position: absolute;
+  inset: 0;
+  background: var(--color-glass-hover);
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--radius-lg);
+  z-index: 0;
+}
+
+/* Pills Variant */
+.tabBar.pills .tabList {
+  background: transparent;
+  border: none;
+  padding: 0;
+  gap: var(--space-2);
+  backdrop-filter: none;
+}
+
+.tabBar.pills .tab {
+  background: var(--color-glass);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+  padding: var(--space-2) var(--space-4);
+}
+
+.tabBar.pills .tab:hover {
+  background: var(--color-glass-hover);
+  border-color: var(--color-border-light);
+}
+
+.tabBar.pills .tab.active {
+  background: var(--color-accent-subtle);
+  border-color: var(--color-border-accent);
+  color: var(--color-accent);
+}
+
+/* Underline Variant */
+.tabBar.underline .tabList {
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--color-border);
+  border-radius: 0;
+  padding: 0;
+  gap: 0;
+  backdrop-filter: none;
+}
+
+.tabBar.underline .tab {
+  border-radius: 0;
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+}
+
+.tabBar.underline .tab:hover {
+  border-bottom-color: var(--color-border-light);
+}
+
+.tabBar.underline .tab.active {
+  border-bottom-color: var(--color-accent);
+  color: var(--color-accent);
+}
+
+.tabBar.underline .indicator {
+  display: none;
+}
+
+/* Tab Content */
+.tabContent {
+  width: 100%;
+}
+
+/* Scrollable tabs for mobile */
+@media (max-width: 640px) {
+  .tabBar {
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .tabBar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .tabList {
+    width: max-content;
+    min-width: 100%;
+  }
+
+  .tab {
+    padding: var(--space-2) var(--space-3);
+    font-size: var(--text-xs);
+  }
+}

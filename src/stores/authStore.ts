@@ -1,0 +1,191 @@
+import { create } from 'zustand';
+import { api } from '../services/api';
+import { telegram } from '../services/telegram';
+import type { User } from '../types';
+
+interface AuthState {
+  user: User | null;
+  isAuthenticated: boolean;
+  isLoading: boolean;
+  error: string | null;
+  isTelegramAuth: boolean;
+  isNewUser: boolean;
+
+  // Actions
+  login: (email: string, password: string) => Promise<boolean>;
+  register: (email: string, password: string) => Promise<boolean>;
+  loginWithTelegram: () => Promise<boolean>;
+  logout: () => void;
+  fetchUser: () => Promise<void>;
+  clearError: () => void;
+  initialize: () => Promise<void>;
+}
+
+export const useAuthStore = create<AuthState>((set) => ({
+  user: null,
+  isAuthenticated: api.isAuthenticated(),
+  isLoading: false,
+  error: null,
+  isTelegramAuth: false,
+  isNewUser: false,
+
+  login: async (email: string, password: string) => {
+    set({ isLoading: true, error: null });
+    try {
+      const response = await api.login(email, password);
+      if (response.success && response.data) {
+        set({
+          user: response.data.user,
+          isAuthenticated: true,
+          isLoading: false,
+        });
+        return true;
+      } else {
+        set({
+          error: response.error?.message || 'Login failed',
+          isLoading: false,
+        });
+        return false;
+      }
+    } catch (error) {
+      set({
+        error: (error as Error).message,
+        isLoading: false,
+      });
+      return false;
+    }
+  },
+
+  register: async (email: string, password: string) => {
+    set({ isLoading: true, error: null });
+    try {
+      const response = await api.register(email, password);
+      if (response.success && response.data) {
+        set({
+          user: response.data.user,
+          isAuthenticated: true,
+          isLoading: false,
+        });
+        return true;
+      } else {
+        set({
+          error: response.error?.message || 'Registration failed',
+          isLoading: false,
+        });
+        return false;
+      }
+    } catch (error) {
+      set({
+        error: (error as Error).message,
+        isLoading: false,
+      });
+      return false;
+    }
+  },
+
+  loginWithTelegram: async () => {
+    set({ isLoading: true, error: null });
+
+    try {
+      const initDataRaw = telegram.getInitDataRaw();
+      if (!initDataRaw) {
+        set({ error: 'Not running inside Telegram', isLoading: false });
+        return false;
+      }
+
+      const response = await api.telegramAuth(initDataRaw);
+      if (response.success && response.data) {
+        set({
+          user: response.data.user,
+          isAuthenticated: true,
+          isLoading: false,
+          isTelegramAuth: true,
+          isNewUser: response.data.isNewUser,
+        });
+        return true;
+      } else {
+        set({
+          error: response.error?.message || 'Telegram authentication failed',
+          isLoading: false,
+        });
+        return false;
+      }
+    } catch (error) {
+      set({
+        error: (error as Error).message,
+        isLoading: false,
+      });
+      return false;
+    }
+  },
+
+  logout: () => {
+    api.logout();
+    set({
+      user: null,
+      isAuthenticated: false,
+      error: null,
+      isTelegramAuth: false,
+      isNewUser: false,
+    });
+  },
+
+  fetchUser: async () => {
+    if (!api.isAuthenticated()) return;
+
+    try {
+      const response = await api.getMe();
+      if (response.success && response.data) {
+        set({ user: response.data.user });
+      }
+    } catch (error) {
+      console.error('Failed to fetch user:', error);
+    }
+  },
+
+  clearError: () => set({ error: null }),
+
+  initialize: async () => {
+    // First, try to initialize Telegram SDK
+    const isTelegram = await telegram.initialize();
+
+    if (isTelegram) {
+      // Auto-login with Telegram if inside Mini App
+      const initDataRaw = telegram.getInitDataRaw();
+
+      if (initDataRaw) {
+        set({ isLoading: true });
+        try {
+          const response = await api.telegramAuth(initDataRaw);
+
+          if (response.success && response.data) {
+            set({
+              user: response.data.user,
+              isAuthenticated: true,
+              isTelegramAuth: true,
+              isNewUser: response.data.isNewUser,
+              isLoading: false,
+            });
+            return;
+          }
+        } catch (error) {
+          // Telegram auth failed, will fall back to token-based auth
+        }
+        set({ isLoading: false });
+      }
+    }
+
+    // Fallback to existing token-based auth
+    if (api.isAuthenticated()) {
+      set({ isAuthenticated: true });
+      const response = await api.getMe();
+      if (response.success && response.data) {
+        set({ user: response.data.user });
+      } else {
+        // Token might be invalid, clear it
+        api.logout();
+        set({ isAuthenticated: false, user: null });
+      }
+    }
+  },
+}));
