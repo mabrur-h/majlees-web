@@ -11,6 +11,7 @@ interface AuthState {
   isTelegramAuth: boolean;
   isNewUser: boolean;
   _initialized: boolean;
+  _listenerAttached: boolean;
 
   // Actions
   loginWithGoogle: (idToken: string) => Promise<boolean>;
@@ -29,6 +30,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   isTelegramAuth: false,
   isNewUser: false,
   _initialized: false,
+  _listenerAttached: false,
 
   loginWithGoogle: async (idToken: string) => {
     set({ isLoading: true, error: null });
@@ -126,6 +128,20 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       return;
     }
     set({ _initialized: true });
+
+    // Setup auth:logout event listener (fired when API detects user no longer exists)
+    if (!get()._listenerAttached) {
+      set({ _listenerAttached: true });
+      window.addEventListener('auth:logout', () => {
+        set({
+          user: null,
+          isAuthenticated: false,
+          error: null,
+          isTelegramAuth: false,
+          isNewUser: false,
+        });
+      });
+    }
 
     // First, try to initialize Telegram SDK
     const isTelegram = await telegram.initialize();

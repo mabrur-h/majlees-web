@@ -37,6 +37,11 @@ import type {
   ActivatePlanResponse,
   PurchasePackageResponse,
   TransactionsResponse,
+  LinkedAccountsStatus,
+  InitTelegramLinkResponse,
+  InitGoogleLinkResponse,
+  CompleteGoogleLinkResponse,
+  UnlinkResponse,
 } from '../types';
 
 // API URL configuration
@@ -110,7 +115,18 @@ class ApiService {
       headers,
     });
 
-    return response.json();
+    const data = await response.json() as ApiResponse<T>;
+
+    // Handle authentication errors - clear tokens and trigger re-auth
+    // This handles cases like: user deleted after account merge, token expired, etc.
+    if (response.status === 401 ||
+        (data.success === false && data.error?.code === 'USER_NOT_FOUND')) {
+      this.clearTokens();
+      // Dispatch event so auth store can react
+      window.dispatchEvent(new CustomEvent('auth:logout'));
+    }
+
+    return data;
   }
 
   // Health Check
@@ -500,6 +516,47 @@ class ApiService {
   // Subscription - Transaction history
   async getTransactions(page = 1, limit = 20): Promise<ApiResponse<TransactionsResponse>> {
     return this.request(`/api/v1/subscription/transactions?page=${page}&limit=${limit}`);
+  }
+
+  // Account Linking - Get linked accounts status
+  async getLinkedAccountsStatus(): Promise<ApiResponse<LinkedAccountsStatus>> {
+    return this.request('/api/v1/auth/link/status');
+  }
+
+  // Account Linking - Initialize Telegram linking (for Google users)
+  async initTelegramLink(): Promise<ApiResponse<InitTelegramLinkResponse>> {
+    return this.request('/api/v1/auth/link/telegram/init', {
+      method: 'POST',
+    });
+  }
+
+  // Account Linking - Initialize Google linking (for Telegram users)
+  async initGoogleLink(): Promise<ApiResponse<InitGoogleLinkResponse>> {
+    return this.request('/api/v1/auth/link/google/init', {
+      method: 'POST',
+    });
+  }
+
+  // Account Linking - Complete Google linking
+  async completeGoogleLink(token: string, idToken: string): Promise<ApiResponse<CompleteGoogleLinkResponse>> {
+    return this.request('/api/v1/auth/link/google/complete', {
+      method: 'POST',
+      body: JSON.stringify({ token, idToken }),
+    });
+  }
+
+  // Account Linking - Unlink Google account
+  async unlinkGoogle(): Promise<ApiResponse<UnlinkResponse>> {
+    return this.request('/api/v1/auth/unlink/google', {
+      method: 'POST',
+    });
+  }
+
+  // Account Linking - Unlink Telegram account
+  async unlinkTelegram(): Promise<ApiResponse<UnlinkResponse>> {
+    return this.request('/api/v1/auth/unlink/telegram', {
+      method: 'POST',
+    });
   }
 }
 

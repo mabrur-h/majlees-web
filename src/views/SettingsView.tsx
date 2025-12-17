@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom';
 import { Icon } from '@iconify/react';
 import { useAuthStore } from '../stores/authStore';
 import { SubscriptionSection, PricingSection } from '../components/subscription';
+import { LinkedAccounts } from '../components/account';
 import styles from './SettingsView.module.css';
 
 export function SettingsView() {
@@ -34,6 +35,17 @@ export function SettingsView() {
               <span className={styles.email}>{user?.name || user?.email || 'Tizimga kirilmagan'}</span>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* Linked Accounts Section */}
+      <section className={styles.section}>
+        <div className={styles.sectionHeader}>
+          <Icon icon="solar:link-circle-linear" width={20} height={20} />
+          <h2 className={styles.sectionTitle}>Ulangan hisoblar</h2>
+        </div>
+        <div className={styles.card}>
+          <LinkedAccounts />
         </div>
       </section>
 

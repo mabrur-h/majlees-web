@@ -570,3 +570,36 @@ export interface TransactionsResponse {
   transactions: MinuteTransaction[];
   pagination: PaginationInfo;
 }
+
+// Account Linking Types
+export interface LinkedAccountsStatus {
+  google: {
+    linked: boolean;
+    email?: string | null;
+  };
+  telegram: {
+    linked: boolean;
+    username?: string | null;
+  };
+}
+
+export interface InitTelegramLinkResponse {
+  token: string;
+  deepLink: string;
+  expiresIn: number;
+}
+
+export interface InitGoogleLinkResponse {
+  token: string;
+  expiresIn: number;
+}
+
+export interface CompleteGoogleLinkResponse {
+  user: User;
+  merged: boolean;
+  message: string;
+}
+
+export interface UnlinkResponse {
+  message: string;
+}
