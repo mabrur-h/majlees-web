@@ -50,6 +50,11 @@ const getDefaultApiUrl = () => {
   const storedUrl = localStorage.getItem('apiUrl');
   if (storedUrl) return storedUrl;
 
+  // Use environment variable if set (for production)
+  if (import.meta.env.VITE_API_URL) {
+    return import.meta.env.VITE_API_URL;
+  }
+
   const hostname = window.location.hostname;
 
   // If accessing from localhost, use localhost:3000
