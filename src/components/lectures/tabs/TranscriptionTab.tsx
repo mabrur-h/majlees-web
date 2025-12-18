@@ -67,7 +67,7 @@ export function TranscriptionTab({ transcription, onSeek }: TranscriptionTabProp
     return (
       <div className={styles.empty}>
         <Icon icon="solar:document-text-linear" width={48} height={48} />
-        <p>Transcription not available yet</p>
+        <p>Transkripsiya hali mavjud emas</p>
       </div>
     );
   }
@@ -84,8 +84,8 @@ export function TranscriptionTab({ transcription, onSeek }: TranscriptionTabProp
         >
           <div className={styles.collapsibleTitle}>
             <Icon icon="solar:document-text-bold" width={20} height={20} />
-            <span>Full Transcript</span>
-            <span className={styles.wordCount}>{transcription.wordCount || 0} words</span>
+            <span>To'liq matn</span>
+            <span className={styles.wordCount}>{transcription.wordCount || 0} so'z</span>
           </div>
           <motion.div
             animate={{ rotate: isFullTextExpanded ? 180 : 0 }}
@@ -121,8 +121,8 @@ export function TranscriptionTab({ transcription, onSeek }: TranscriptionTabProp
           >
             <div className={styles.collapsibleTitle}>
               <Icon icon="solar:list-check-bold" width={20} height={20} />
-              <span>Timestamped Segments</span>
-              <span className={styles.wordCount}>{transcription.segments!.length} segments</span>
+              <span>Vaqt belgilari</span>
+              <span className={styles.wordCount}>{transcription.segments!.length} segment</span>
             </div>
             <motion.div
               animate={{ rotate: isSegmentsExpanded ? 180 : 0 }}
@@ -183,7 +183,7 @@ export function TranscriptionTab({ transcription, onSeek }: TranscriptionTabProp
       {!isFullTextExpanded && !isSegmentsExpanded && (
         <div className={styles.collapsedHint}>
           <Icon icon="solar:info-circle-linear" width={16} height={16} />
-          <span>Tap sections above to expand transcript content</span>
+          <span>Kontentni kengaytirish uchun yuqoridagi bo'limlarni bosing</span>
         </div>
       )}
     </div>

@@ -59,7 +59,7 @@ export function HomeView({ onNavigate }: HomeViewProps) {
           <div className={styles.greeting}>
             <span className={styles.wave}>👋</span>
             <span className={styles.greetingText}>
-              Hey{user?.name ? `, ${user.name}` : user?.email ? `, ${user.email.split('@')[0]}` : ''}
+              Salom{user?.name ? `, ${user.name}` : user?.email ? `, ${user.email.split('@')[0]}` : ''}
             </span>
           </div>
           <h1 className={styles.heroTitle}>
