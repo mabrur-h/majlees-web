@@ -243,6 +243,12 @@ export function PricingSection({ onClose }: PricingSectionProps) {
             <p className={styles.modalSubtext}>
               Narxi: {formatPrice(confirmPlan.priceUzs)}/oy
             </p>
+            {confirmPlan.priceUzs > 0 && (
+              <p className={styles.modalPaymentNote}>
+                <Icon icon="solar:card-linear" width={16} height={16} />
+                <span>Payme orqali to'lov sahifasiga yo'naltirilasiz</span>
+              </p>
+            )}
             <div className={styles.modalActions}>
               <button
                 className={styles.cancelBtn}
@@ -258,6 +264,8 @@ export function PricingSection({ onClose }: PricingSectionProps) {
               >
                 {isActivatingPlan ? (
                   <Icon icon="solar:refresh-circle-bold" width={18} height={18} className={styles.spinning} />
+                ) : confirmPlan.priceUzs > 0 ? (
+                  "To'lovga o'tish"
                 ) : (
                   'Tasdiqlash'
                 )}
@@ -278,6 +286,10 @@ export function PricingSection({ onClose }: PricingSectionProps) {
             <p className={styles.modalSubtext}>
               Narxi: {formatPrice(confirmPackage.priceUzs)}
             </p>
+            <p className={styles.modalPaymentNote}>
+              <Icon icon="solar:card-linear" width={16} height={16} />
+              <span>Payme orqali to'lov sahifasiga yo'naltirilasiz</span>
+            </p>
             <div className={styles.modalActions}>
               <button
                 className={styles.cancelBtn}
@@ -294,7 +306,7 @@ export function PricingSection({ onClose }: PricingSectionProps) {
                 {isPurchasingPackage ? (
                   <Icon icon="solar:refresh-circle-bold" width={18} height={18} className={styles.spinning} />
                 ) : (
-                  'Sotib olish'
+                  "To'lovga o'tish"
                 )}
               </button>
             </div>
